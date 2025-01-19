@@ -1,11 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 //components
-import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Menu from "./components/Menu";
 
-// Pagess
+// Pages
+import Clientes from "./pages/Clientes";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 
@@ -15,18 +15,19 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col">
         {!isLoginPage && <Header />}
-        <div className="flex flex-1">
+        <div className="flex flex-1 ">
           {!isLoginPage && <Menu />}
-          <main className="flex-1 bg-gray-100 p-4">
+          <main className="flex-1 ">
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/home" element={<Home />} />
+              <Route path="/clientes" element={<Clientes />} />
             </Routes>
           </main>
         </div>
-        {!isLoginPage && <Footer />}
+        {/* {!isLoginPage && <Footer />} */}
       </div>
     </BrowserRouter>
   );

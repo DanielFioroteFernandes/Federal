@@ -1,12 +1,14 @@
 // components
-import Logo from "../../components/Logo";
+
+// logo
+import logogrande from "../../assets/federal_logo.grande.png";
 
 function Login() {
   return (
     <div className="flex h-screen">
       {/* Lado esquerdo - Informações da empresa */}
       <div className="w-1/2 bg-gradient-to-r from-lime-400 via-green-500 to-teal-500 text-white flex flex-col justify-center items-center p-8">
-        <Logo />
+        <img src={logogrande} alt="Login" className="object-cover" />
         <p className="mt-4 text-lg">
           A melhor empresa de móveis planejados do Brasil.
         </p>

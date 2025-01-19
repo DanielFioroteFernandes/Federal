@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 
 function Menu() {
   return (
-    <aside className="w-64 bg-gray-800 text-white min-h-screen p-5 ">
+    <aside className="w-64  bg-gray-400 p-5 ">
       <ul>
         {/* cadastre e pesquisa de clientes */}
         <li className="mb-4 ">
           <Link
             to="/clientes"
-            className="text-2xl text-white hover:text-green-500 flex items-center"
+            className="text-xl text-white hover:text-green-500 flex items-center"
           >
             <FaUsers className="mr-2" /> {/* Ícone à esquerda do texto */}
             Clientes
@@ -20,7 +20,7 @@ function Menu() {
         <li className="mb-4 ">
           <Link
             to="/funcionarios"
-            className="text-2xl text-white hover:text-green-500 flex items-center"
+            className="text-xl text-white hover:text-green-500 flex items-center"
           >
             <FaUserTie className="mr-2" /> {/* Ícone à esquerda do texto */}
             Funcionarios
@@ -31,7 +31,7 @@ function Menu() {
         <li className="mb-4 ">
           <Link
             to="/terceiros"
-            className="text-2xl text-white hover:text-green-500 flex items-center"
+            className="text-xl text-white hover:text-green-500 flex items-center"
           >
             <FaUserAlt className="mr-2" /> {/* Ícone à esquerda do texto */}
             Terceiros
@@ -42,7 +42,7 @@ function Menu() {
         <li className="mb-4 ">
           <Link
             to="/orcamentos"
-            className="text-2xl text-white hover:text-green-500 flex items-center"
+            className="text-xl text-white hover:text-green-500 flex items-center"
           >
             <FaFileInvoice className="mr-2" /> {/* Ícone à esquerda do texto */}
             Orçamentos

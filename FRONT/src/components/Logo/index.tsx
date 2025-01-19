@@ -1,14 +1,33 @@
 function Logo() {
   return (
-    <div className="flex flex-col items-center justify-center p-8 bg-gradient-to-r from-green-800 via-green-500 to-green-800 rounded-lg shadow-2xl">
-      {/* Nome "Federal" na parte superior */}
-      <h1 className="text-6xl font-extrabold text-slate-950 tracking-wider drop-shadow-2xl transform hover:scale-105 transition duration-300 ease-in-out">
-        Federal
-      </h1>
-      {/* Nome "Ambientes Planejados" na parte inferior */}
-      <p className="text-2xl text-gray-100 mt-4 tracking-wide drop-shadow-xl transform hover:scale-105 transition duration-300 ease-in-out">
-        Ambientes Planejados
-      </p>
+    <div className="flex items-center space-x-4">
+      {/* Caixa geométrica */}
+      <div className="relative w-16 h-16">
+        {/* Parte cinza */}
+        <div
+          className="absolute w-full h-full bg-gradient-to-tr from-gray-500 to-gray-700"
+          style={{
+            clipPath:
+              "polygon(0% 0%, 100% 0%, 50% 50%, 100% 100%, 0% 100%, 50% 50%)",
+          }}
+        />
+        {/* Parte verde */}
+        <div
+          className="absolute w-full h-full bg-gradient-to-br from-lime-400 to-green-500"
+          style={{
+            clipPath:
+              "polygon(50% 50%, 100% 0%, 100% 100%, 50% 50%, 0% 100%, 0% 0%)",
+          }}
+        />
+      </div>
+
+      {/* Texto da logo */}
+      <div>
+        <h1 className="text-4xl font-bold text-gray-800">Federal</h1>
+        <span className="bg-green-500 text-white px-2 py-1 text-lg rounded">
+          Ambientes Planejados
+        </span>
+      </div>
     </div>
   );
 }
