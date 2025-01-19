@@ -105,7 +105,22 @@ function Clientes() {
 
       {/* Exibição dos Usuários Cadastrados */}
       <div className="w-1/2 bg-gray-200 p-8 overflow-y-auto ">
-        <h2 className="text-2xl font-bold mb-6">Clientes Cadastrados</h2>
+        <div className="flex items-center justify-between mb-6">
+          {/* Título */}
+          <h2 className="text-2xl font-bold">Lista de Clientes</h2>
+
+          {/* Campo de pesquisa e botão alinhados à direita */}
+          <div className="flex items-center space-x-4 ml-auto">
+            <input
+              type="text"
+              placeholder="Pesquisar Cliente"
+              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-300">
+              Pesquisar
+            </button>
+          </div>
+        </div>
         <div className="space-y-4">
           {clientes.length === 0 ? (
             <p>Não há clientes cadastrados.</p>

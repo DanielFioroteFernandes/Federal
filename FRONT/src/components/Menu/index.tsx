@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function Menu() {
   return (
-    <aside className="w-64  bg-gray-400 p-5 ">
+    <aside className="w-64  bg-gray-500 p-5 ">
       <ul>
         {/* cadastre e pesquisa de clientes */}
         <li className="mb-4 ">

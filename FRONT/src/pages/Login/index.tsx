@@ -63,7 +63,8 @@ function Login() {
             </div>
           </form>
           <p className="text-center text-gray-500 text-xs">
-            &copy;2025 Federal Móveis. Todos os direitos reservados.
+            &copy;2025 Federal Ambientes Planejados. Todos os direitos
+            reservados.
           </p>
         </div>
       </div>
