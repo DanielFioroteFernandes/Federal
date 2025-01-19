@@ -48,7 +48,7 @@ function Clientes() {
               name="nome"
               value={formData.nome}
               onChange={handleChange}
-              className="w-full p-2 border rounded-md"
+              className="w-full  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-300"
               required
             />
           </div>
@@ -62,7 +62,7 @@ function Clientes() {
               name="endereco"
               value={formData.endereco}
               onChange={handleChange}
-              className="w-full p-2 border rounded-md"
+              className="w-full  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-300"
               required
             />
           </div>
@@ -76,7 +76,7 @@ function Clientes() {
               name="telefone"
               value={formData.telefone}
               onChange={handleChange}
-              className="w-full p-2 border rounded-md"
+              className="w-full  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-300"
               required
             />
           </div>
@@ -90,7 +90,7 @@ function Clientes() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-2 border rounded-md"
+              className="w-full  border  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-300"
               required
             />
           </div>
@@ -114,9 +114,9 @@ function Clientes() {
             <input
               type="text"
               placeholder="Pesquisar Cliente"
-              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-300"
             />
-            <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-300">
+            <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-300">
               Pesquisar
             </button>
           </div>
