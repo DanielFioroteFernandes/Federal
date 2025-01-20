@@ -8,6 +8,7 @@ import Menu from "./components/Menu";
 import Clientes from "./pages/Clientes";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import UsuariosSistema from "./pages/UsuariosSistema";
 
 function App() {
   // Verifica se a rota atual é "/login"
@@ -21,9 +22,14 @@ function App() {
           {!isLoginPage && <Menu />}
           <main className="flex-1 ">
             <Routes>
+              {/* Rotas Livre */}
               <Route path="/" element={<Login />} />
+
+              {/* Rotas Privada */}
+
               <Route path="/home" element={<Home />} />
               <Route path="/clientes" element={<Clientes />} />
+              <Route path="/usuariosSistema" element={<UsuariosSistema />} />
             </Routes>
           </main>
         </div>

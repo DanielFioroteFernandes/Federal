@@ -1,24 +1,25 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 import React, { useState } from "react";
-interface Cliente {
+interface UsuariosSistema {
   nome: string;
-  endereco: string;
-  telefone: string;
   email: string;
-  cpf: string;
+  senha: string;
+  perfil: string;
 }
-function Clientes() {
-  const [clientes, setClientes] = useState<Cliente[]>([]); // Armazenar os clientes
-  const [formData, setFormData] = useState<Cliente>({
+
+function UsuariosSistema() {
+  const [usuariosSistema, setUsuariosSistema] = useState<UsuariosSistema[]>([]); // Armazenar os clientes
+  const [formData, setFormData] = useState<UsuariosSistema>({
     nome: "",
-    endereco: "",
-    telefone: "",
     email: "",
-    cpf: "",
+    senha: "",
+    perfil: "", // Valor padrão
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -28,8 +29,8 @@ function Clientes() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setClientes([...clientes, formData]); // Adiciona o novo cliente à lista
-    setFormData({ nome: "", endereco: "", telefone: "", email: "", cpf: "" }); // Limpa o formulário
+    setUsuariosSistema([...usuariosSistema, formData]); // Adiciona o novo cliente à lista
+    setFormData({ nome: "", email: "", senha: "", perfil: "" }); // Limpa o formulário
   };
 
   return (
@@ -37,7 +38,7 @@ function Clientes() {
       {/* Formulário de Cadastro */}
       <div className="w-1/2 bg-gray-100 p-8 justify-center">
         <h2 className="text-2xl font-bold mb-6 text-center ">
-          Cadastro de Cliente
+          Cadastre usuários no sistema
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -54,48 +55,7 @@ function Clientes() {
               required
             />
           </div>
-          <div>
-            <label htmlFor="cpf" className="block text-lg">
-              CPF
-            </label>
-            <input
-              type="text"
-              id="cpf"
-              name="cpf"
-              value={formData.cpf}
-              onChange={handleChange}
-              className="w-full  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="endereco" className="block text-lg">
-              Endereço
-            </label>
-            <input
-              type="text"
-              id="endereco"
-              name="endereco"
-              value={formData.endereco}
-              onChange={handleChange}
-              className="w-full  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="telefone" className="block text-lg">
-              Telefone
-            </label>
-            <input
-              type="tel"
-              id="telefone"
-              name="telefone"
-              value={formData.telefone}
-              onChange={handleChange}
-              className="w-full  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
-          </div>
+
           <div>
             <label htmlFor="email" className="block text-lg">
               Email
@@ -110,6 +70,40 @@ function Clientes() {
               required
             />
           </div>
+
+          <div>
+            <label htmlFor="perfil" className="block text-lg">
+              Perfil
+            </label>
+            <select
+              id="perfil"
+              name="perfil"
+              value={formData.perfil}
+              onChange={handleChange}
+              className="w-full border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              required
+            >
+              <option value="Teste2">Selecione uma opção</option>
+              <option value="Basico">Básico</option>
+              <option value="Adm">Administrador</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="cpf" className="block text-lg">
+              Senha
+            </label>
+            <input
+              type="password"
+              id="senha"
+              name="senha"
+              value={formData.senha}
+              onChange={handleChange}
+              className="w-full  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              required
+            />
+          </div>
+
           <button
             type="submit"
             className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-300"
@@ -123,13 +117,13 @@ function Clientes() {
       <div className="w-1/2 bg-gray-200 p-8 overflow-y-auto ">
         <div className="flex items-center justify-between mb-6">
           {/* Título */}
-          <h2 className="text-2xl font-bold">Lista de Clientes</h2>
+          <h2 className="text-2xl font-bold">Lista de Usuários</h2>
 
           {/* Campo de pesquisa e botão alinhados à direita */}
           <div className="flex items-center space-x-4 ml-auto">
             <input
               type="text"
-              placeholder="Pesquisar Cliente"
+              placeholder="Pesquisar Usuário"
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
             <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-300">
@@ -138,27 +132,26 @@ function Clientes() {
           </div>
         </div>
         <div className=" space-y-4 ">
-          {clientes.length === 0 ? (
-            <p>Não há clientes cadastrados.</p>
+          {usuariosSistema.length === 0 ? (
+            <p>Não há usuários cadastrados.</p>
           ) : (
-            clientes.map((cliente, index) => (
+            usuariosSistema.map((usuario, index) => (
               <div key={index} className="p-4 bg-white rounded-md shadow-md  ">
                 <div className="flex justify-between items-center">
                   {/* Detalhes do Cliente */}
 
                   <div>
-                    <h3 className="text-xl font-semibold ">{cliente.nome}</h3>
                     <p>
-                      <strong>Endereço:</strong> {cliente.endereco}
+                      <strong>Nome:</strong> {usuario.nome}
                     </p>
                     <p>
-                      <strong>Telefone:</strong> {cliente.telefone}
+                      <strong>Email:</strong> {usuario.email}
                     </p>
                     <p>
-                      <strong>Email:</strong> {cliente.email}
+                      <strong>Senha:</strong> {usuario.senha}
                     </p>
                     <p>
-                      <strong>CPF:</strong> {cliente.email}
+                      <strong>Perfil:</strong> {usuario.perfil}
                     </p>
                   </div>
                   {/* Ícones de Editar e Excluir */}
@@ -180,4 +173,4 @@ function Clientes() {
   );
 }
 
-export default Clientes;
+export default UsuariosSistema;

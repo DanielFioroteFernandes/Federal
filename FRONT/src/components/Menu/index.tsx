@@ -1,10 +1,28 @@
-import { FaUsers, FaUserTie, FaUserAlt, FaFileInvoice } from "react-icons/fa";
+import {
+  FaUsers,
+  FaUserTie,
+  FaUserAlt,
+  FaFileInvoice,
+  FaHome,
+  FaUserPlus,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 function Menu() {
   return (
-    <aside className="w-64  bg-gray-500 p-5 ">
+    <aside className="w-64  bg-gray-500 p-5 border-r-2 border-gray-400">
       <ul>
+        {/* pagina home */}
+        <li className="mb-4 ">
+          <Link
+            to="/home"
+            className="text-xl text-white hover:text-green-500 flex items-center"
+          >
+            <FaHome className="mr-2" /> {/* Ícone à esquerda do texto */}
+            Home
+          </Link>
+        </li>
+        <hr className="border-gray-400 my-4" /> {/* Linha divisória */}
         {/* cadastre e pesquisa de clientes */}
         <li className="mb-4 ">
           <Link
@@ -15,7 +33,6 @@ function Menu() {
             Clientes
           </Link>
         </li>
-
         {/* cadastre e pesquisa de funcionarios */}
         <li className="mb-4 ">
           <Link
@@ -26,7 +43,6 @@ function Menu() {
             Funcionarios
           </Link>
         </li>
-
         {/* cadastre e pesquisa de terceiros */}
         <li className="mb-4 ">
           <Link
@@ -37,7 +53,7 @@ function Menu() {
             Terceiros
           </Link>
         </li>
-
+        <hr className="border-gray-400 my-4" /> {/* Linha divisória */}
         {/* cadastre e pesquisa de orçamentos */}
         <li className="mb-4 ">
           <Link
@@ -46,6 +62,16 @@ function Menu() {
           >
             <FaFileInvoice className="mr-2" /> {/* Ícone à esquerda do texto */}
             Orçamentos
+          </Link>
+        </li>
+        {/* cadastro de usuarios no sistema*/}
+        <li className="mb-4 ">
+          <Link
+            to="/usuariosSistema"
+            className="text-xl text-white hover:text-green-500 flex items-center"
+          >
+            <FaUserPlus className="mr-2" /> {/* Ícone à esquerda do texto */}
+            Usuários
           </Link>
         </li>
       </ul>
