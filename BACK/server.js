@@ -1,11 +1,13 @@
 import express from "express";
 import privateRoutes from "./routes/private/private.js";
 import publicRoutes from "./routes/public/public.js";
+import cors from "cors";
 
 import auth from "./middlewares/auth.js";
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // Rota Publicas
 app.use("/", publicRoutes);

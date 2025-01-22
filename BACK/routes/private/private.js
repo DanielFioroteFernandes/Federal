@@ -32,7 +32,10 @@ router.post("/cadastro", async (req, res) => {
 
 router.get("/listar", async (req, res) => {
   try {
-    const users = await prisma.user.findMany({ omit: { password: true } });
+    const users = await prisma.user.findMany();
+
+    //serve para omitir a senha
+    // const users = await prisma.user.findMany({ omit: { password: true } });
 
     res.status(200).json({ message: "success", users });
   } catch (err) {

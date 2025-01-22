@@ -1,37 +1,59 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-import React, { useState } from "react";
-interface UsuariosSistema {
-  nome: string;
-  email: string;
-  senha: string;
-  perfil: string;
-}
+import { useState, useEffect } from "react";
+
+import api from "../../services/api";
 
 function UsuariosSistema() {
-  const [usuariosSistema, setUsuariosSistema] = useState<UsuariosSistema[]>([]); // Armazenar os clientes
-  const [formData, setFormData] = useState<UsuariosSistema>({
-    nome: "",
-    email: "",
-    senha: "",
-    perfil: "", // Valor padrão
-  });
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [perfil, setPerfil] = useState("");
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const [users, setUsers] = useState<Users[]>([]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  interface Users {
+    id?: string;
+    name: string;
+    email: string;
+    perfil: string;
+    password: string;
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setUsuariosSistema([...usuariosSistema, formData]); // Adiciona o novo cliente à lista
-    setFormData({ nome: "", email: "", senha: "", perfil: "" }); // Limpa o formulário
-  };
+
+    try {
+      await api.post("/cadastro", {
+        name,
+        email,
+        password,
+        perfil,
+      });
+      alert("Usuário Cadastrado");
+
+      // Limpar os campos do formulário
+      setName("");
+      setEmail("");
+      setPassword("");
+      setPerfil("");
+    } catch (err) {
+      alert("Erro ao cadastrar o usuário");
+    }
+  }
+
+  async function getUsers() {
+    try {
+      const response = await api.get("/listar");
+      setUsers(response.data.users);
+    } catch (err) {
+      alert("Erro ao buscar usuários.");
+    }
+  }
+
+  useEffect(() => {
+    getUsers();
+  }, []);
 
   return (
     <div className="flex h-screen ">
@@ -40,17 +62,16 @@ function UsuariosSistema() {
         <h2 className="text-2xl font-bold mb-6 text-center ">
           Cadastre usuários no sistema
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="nome" className="block text-lg">
+            <label htmlFor="name" className="block text-lg">
               Nome
             </label>
             <input
+              onChange={(e) => setName(e.target.value)}
               type="text"
-              id="nome"
-              name="nome"
-              value={formData.nome}
-              onChange={handleChange}
+              id="name"
+              name="name"
               className="w-full  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
               required
             />
@@ -61,11 +82,10 @@ function UsuariosSistema() {
               Email
             </label>
             <input
+              onChange={(e) => setEmail(e.target.value)}
               type="email"
               id="email"
               name="email"
-              value={formData.email}
-              onChange={handleChange}
               className="w-full  border  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
               required
             />
@@ -76,29 +96,27 @@ function UsuariosSistema() {
               Perfil
             </label>
             <select
+              onChange={(e) => setPerfil(e.target.value)}
               id="perfil"
               name="perfil"
-              value={formData.perfil}
-              onChange={handleChange}
               className="w-full border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
               required
             >
-              <option value="Teste2">Selecione uma opção</option>
-              <option value="Basico">Básico</option>
-              <option value="Adm">Administrador</option>
+              <option value="">Selecione uma opção</option>
+              <option value="basico">Básico</option>
+              <option value="adm">Administrador</option>
             </select>
           </div>
 
           <div>
-            <label htmlFor="cpf" className="block text-lg">
+            <label htmlFor="password" className="block text-lg">
               Senha
             </label>
             <input
+              onChange={(e) => setPassword(e.target.value)}
               type="password"
-              id="senha"
-              name="senha"
-              value={formData.senha}
-              onChange={handleChange}
+              id="password"
+              name="password"
               className="w-full  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
               required
             />
@@ -114,6 +132,9 @@ function UsuariosSistema() {
       </div>
 
       {/* Exibição dos Usuários Cadastrados */}
+
+      {/* Exibição dos Usuários Cadastrados */}
+
       <div className="w-1/2 bg-gray-200 p-8 overflow-y-auto ">
         <div className="flex items-center justify-between mb-6">
           {/* Título */}
@@ -132,25 +153,28 @@ function UsuariosSistema() {
           </div>
         </div>
         <div className=" space-y-4 ">
-          {usuariosSistema.length === 0 ? (
+          {users.length === 0 ? (
             <p>Não há usuários cadastrados.</p>
           ) : (
-            usuariosSistema.map((usuario, index) => (
-              <div key={index} className="p-4 bg-white rounded-md shadow-md  ">
+            users.map((usuario) => (
+              <div
+                key={usuario.id}
+                className="p-4 bg-white rounded-md shadow-md  "
+              >
                 <div className="flex justify-between items-center">
                   {/* Detalhes do Cliente */}
 
-                  <div>
-                    <p>
-                      <strong>Nome:</strong> {usuario.nome}
+                  <div className="w-3/4">
+                    <p className="whitespace-nowrap overflow-hidden text-ellipsis">
+                      <strong>Nome:</strong> {usuario.name}
                     </p>
-                    <p>
+                    <p className="whitespace-nowrap overflow-hidden text-ellipsis">
                       <strong>Email:</strong> {usuario.email}
                     </p>
-                    <p>
-                      <strong>Senha:</strong> {usuario.senha}
+                    <p className="whitespace-nowrap overflow-hidden text-ellipsis">
+                      <strong>Senha:</strong> {usuario.password}
                     </p>
-                    <p>
+                    <p className="whitespace-nowrap overflow-hidden text-ellipsis">
                       <strong>Perfil:</strong> {usuario.perfil}
                     </p>
                   </div>

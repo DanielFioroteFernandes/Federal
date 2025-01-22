@@ -1,9 +1,34 @@
-// components
+import { useNavigate } from "react-router-dom";
 
+import api from "../../services/api";
 // logo
+import { useState } from "react";
 import logogrande from "../../assets/federal_logo.grande.png";
 
 function Login() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    try {
+      const { data: token } = await api.post("/login", {
+        email,
+        password,
+      });
+
+      localStorage.setItem("token", token);
+      console.log(token);
+
+      navigate("/home");
+    } catch (err) {
+      alert("senha ou email incorreto");
+    }
+  }
+
   return (
     <div className="flex h-screen">
       {/* Lado esquerdo - Informações da empresa */}
@@ -24,31 +49,30 @@ function Login() {
           <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
             Bem-vindo
           </h2>
-          <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+          <form
+            className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+            onSubmit={handleSubmit}
+          >
             <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="username"
-              >
+              <label className="block text-gray-700 text-sm font-bold mb-2">
                 Login
               </label>
               <input
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="username"
                 type="text"
                 placeholder="Digite seu login"
               />
             </div>
             <div className="mb-6">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="password"
-              >
+              <label className="block text-gray-700 text-sm font-bold mb-2">
                 Senha
               </label>
               <input
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                id="password"
                 type="password"
                 placeholder="Digite sua senha"
               />
@@ -56,7 +80,7 @@ function Login() {
             <div className="flex items-center justify-between">
               <button
                 className="bg-green-500 hover:bg-green-300 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                type="button"
+                type="submit"
               >
                 Entrar
               </button>
