@@ -1,98 +1,131 @@
 import { useNavigate } from "react-router-dom";
-
-import api from "../../services/api";
-// logo
 import { useState } from "react";
+import { Box, Typography, Button, TextField } from "@mui/material";
+import api from "../../services/api";
 import logogrande from "../../assets/federal_logo.grande.png";
+import { toast } from "sonner";
 
 function Login() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const { data: token } = await api.post("/login", {
-        email,
-        password,
-      });
-
+      const { data: token } = await api.post("/login", { email, password });
       localStorage.setItem("token", token);
-      console.log(token);
-
-      navigate("/home");
+      navigate("../home");
     } catch (err) {
-      alert("senha ou email incorreto");
+      toast.error("Senha ou email incorreto.");
     }
-  }
+  };
 
   return (
-    <div className="flex h-screen">
-      {/* Lado esquerdo - Informações da empresa */}
-      <div className="w-1/2 bg-gradient-to-r from-lime-400 via-green-500 to-teal-500 text-white flex flex-col justify-center items-center p-8">
-        <img src={logogrande} alt="Login" className="object-cover" />
-        <p className="mt-4 text-lg">
-          A melhor empresa de móveis planejados do Brasil.
-        </p>
-        <p className="mt-2 text-lg">
-          Oferecemos qualidade, durabilidade e design exclusivo para transformar
-          sua casa.
-        </p>
-      </div>
+    <Box
+      display="flex"
+      flexDirection={{ xs: "column", md: "row" }}
+      height="100vh"
+    >
+      {/* Lado esquerdo - Logo ocupando todo o espaço disponível */}
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        flex={1}
+        bgcolor="#f7f7f7"
+      >
+        <img
+          src={logogrande}
+          alt="Logo da empresa"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            padding: "20px",
+          }}
+        />
+      </Box>
 
       {/* Lado direito - Formulário de login */}
-      <div className="w-1/2 bg-gray-100 flex flex-col justify-center items-center p-8">
-        <div className="w-full max-w-md">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-            Bem-vindo
-          </h2>
-          <form
-            className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
-            onSubmit={handleSubmit}
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        flex={1}
+        p={4}
+      >
+        <Box
+          sx={{
+            maxWidth: 400,
+            width: "100%",
+            backgroundColor: "white",
+            boxShadow: 2,
+            borderRadius: 2,
+            p: 4,
+          }}
+        >
+          <Typography
+            variant="h4"
+            component="h2"
+            textAlign="center"
+            fontWeight="bold"
+            color="gray.800"
+            mb={4}
           >
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Login
-              </label>
-              <input
-                onChange={(e) => setEmail(e.target.value)}
+            Bem-vindo
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <Box mb={3}>
+              <TextField
+                fullWidth
+                label="Login"
+                variant="outlined"
                 value={email}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Digite seu login"
               />
-            </div>
-            <div className="mb-6">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
-                Senha
-              </label>
-              <input
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+            </Box>
+            <Box mb={3}>
+              <TextField
+                fullWidth
                 type="password"
+                label="Senha"
+                variant="outlined"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Digite sua senha"
               />
-            </div>
-            <div className="flex items-center justify-between">
-              <button
-                className="bg-green-500 hover:bg-green-300 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            </Box>
+            <Box textAlign="center">
+              <Button
                 type="submit"
+                variant="contained"
+                color="success"
+                size="large"
+                sx={{ textTransform: "none", borderRadius: 2 }}
               >
                 Entrar
-              </button>
-            </div>
+              </Button>
+            </Box>
           </form>
-          <p className="text-center text-gray-500 text-xs">
+          <Typography
+            variant="caption"
+            display="block"
+            textAlign="center"
+            mt={3}
+            color="gray.500"
+          >
             &copy;2025 Federal Ambientes Planejados. Todos os direitos
             reservados.
-          </p>
-        </div>
-      </div>
-    </div>
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
   );
 }
+
 export default Login;

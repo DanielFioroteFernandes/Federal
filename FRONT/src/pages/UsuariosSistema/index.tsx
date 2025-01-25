@@ -1,7 +1,20 @@
-import { FaEdit, FaTrash } from "react-icons/fa";
+import {
+  Box,
+  Button,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
+import { DeleteOutline, Edit } from "@mui/icons-material";
+import { toast } from "sonner";
 import api from "../../services/api";
 
 function UsuariosSistema() {
@@ -9,11 +22,12 @@ function UsuariosSistema() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [perfil, setPerfil] = useState("");
-
+  const [search, setSearch] = useState("");
+  const [editId, setEditId] = useState<string | null>(null);
   const [users, setUsers] = useState<Users[]>([]);
 
   interface Users {
-    id?: string;
+    id: string;
     name: string;
     email: string;
     perfil: string;
@@ -22,33 +36,75 @@ function UsuariosSistema() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const token = localStorage.getItem("token");
 
     try {
-      await api.post("/cadastro", {
-        name,
-        email,
-        password,
-        perfil,
-      });
-      alert("Usuário Cadastrado");
+      if (editId) {
+        await api.put(
+          `/alterar/${editId}`,
+          { name, email, perfil, password },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        toast.success("Usuário atualizado com sucesso!");
+      } else {
+        await api.post(
+          "/cadastro",
+          { name, email, password, perfil },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        toast.success("Usuário cadastrado com sucesso!");
+      }
 
-      // Limpar os campos do formulário
       setName("");
       setEmail("");
       setPassword("");
       setPerfil("");
+      setEditId(null);
+      getUsers();
     } catch (err) {
-      alert("Erro ao cadastrar o usuário");
+      toast.error(
+        editId ? "Erro ao atualizar o usuário." : "Erro ao cadastrar o usuário."
+      );
     }
   }
 
   async function getUsers() {
     try {
-      const response = await api.get("/listar");
-      setUsers(response.data.users);
+      const token = localStorage.getItem("token");
+      const {
+        data: { users },
+      } = await api.get(`/listar?email=${search}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUsers(users);
     } catch (err) {
-      alert("Erro ao buscar usuários.");
+      toast.info("Não foi possível buscar os usuários!");
     }
+  }
+
+  async function deleteUsers(id: string) {
+    try {
+      const token = localStorage.getItem("token");
+      await api.delete(`/deletar/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Usuário deletado com sucesso!");
+      getUsers();
+    } catch (err) {
+      toast.error("Erro ao deletar usuário!");
+    }
+  }
+
+  function handleEdit(user: Users) {
+    setName(user.name);
+    setEmail(user.email);
+    setPerfil(user.perfil);
+    setPassword(user.password);
+    setEditId(user.id);
+  }
+
+  function handleSearch() {
+    getUsers();
   }
 
   useEffect(() => {
@@ -56,144 +112,132 @@ function UsuariosSistema() {
   }, []);
 
   return (
-    <div className="flex h-screen ">
-      {/* Formulário de Cadastro */}
-      <div className="w-1/2 bg-gray-100 p-8 justify-center">
-        <h2 className="text-2xl font-bold mb-6 text-center ">
-          Cadastre usuários no sistema
-        </h2>
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="name" className="block text-lg">
-              Nome
-            </label>
-            <input
-              onChange={(e) => setName(e.target.value)}
-              type="text"
-              id="name"
-              name="name"
-              className="w-full  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="email" className="block text-lg">
-              Email
-            </label>
-            <input
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-              id="email"
-              name="email"
-              className="w-full  border  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="perfil" className="block text-lg">
-              Perfil
-            </label>
-            <select
+    <Box
+      display="flex"
+      flexDirection={{ xs: "column", md: "row" }}
+      py={4}
+      gap={4}
+      padding={3}
+    >
+      <Paper elevation={3} sx={{ flex: 1, p: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          {editId ? "Editar usuário" : "Cadastrar usuário"}
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Nome"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            fullWidth
+            margin="normal"
+            required
+          />
+          <TextField
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            fullWidth
+            margin="normal"
+            required
+          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="perfil-label">Perfil</InputLabel>
+            <Select
+              labelId="perfil-label"
+              value={perfil}
               onChange={(e) => setPerfil(e.target.value)}
-              id="perfil"
-              name="perfil"
-              className="w-full border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
               required
             >
-              <option value="">Selecione uma opção</option>
-              <option value="basico">Básico</option>
-              <option value="adm">Administrador</option>
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-lg">
-              Senha
-            </label>
-            <input
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              id="password"
-              name="password"
-              className="w-full  border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-300"
-          >
-            Cadastrar
-          </button>
+              <MenuItem value="">Selecione uma opção</MenuItem>
+              <MenuItem value="basico">Básico</MenuItem>
+              <MenuItem value="adm">Administrador</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            label="Senha"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            fullWidth
+            margin="normal"
+            required
+          />
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            {editId ? "Salvar alterações" : "Cadastrar"}
+          </Button>
         </form>
-      </div>
+      </Paper>
 
-      {/* Exibição dos Usuários Cadastrados */}
-
-      {/* Exibição dos Usuários Cadastrados */}
-
-      <div className="w-1/2 bg-gray-200 p-8 overflow-y-auto ">
-        <div className="flex items-center justify-between mb-6">
-          {/* Título */}
-          <h2 className="text-2xl font-bold">Lista de Usuários</h2>
-
-          {/* Campo de pesquisa e botão alinhados à direita */}
-          <div className="flex items-center space-x-4 ml-auto">
-            <input
-              type="text"
-              placeholder="Pesquisar Usuário"
-              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
+      <Paper elevation={3} sx={{ flex: 1, p: 4 }}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={3}
+        >
+          <Typography variant="h5">Lista de Usuários</Typography>
+          <Box display="flex" gap={2}>
+            <TextField
+              label="Pesquisar"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              size="small"
             />
-            <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-300">
+            <Button onClick={handleSearch} variant="contained" color="success">
               Pesquisar
-            </button>
-          </div>
-        </div>
-        <div className=" space-y-4 ">
-          {users.length === 0 ? (
-            <p>Não há usuários cadastrados.</p>
-          ) : (
-            users.map((usuario) => (
-              <div
-                key={usuario.id}
-                className="p-4 bg-white rounded-md shadow-md  "
-              >
-                <div className="flex justify-between items-center">
-                  {/* Detalhes do Cliente */}
+            </Button>
+          </Box>
+        </Box>
 
-                  <div className="w-3/4">
-                    <p className="whitespace-nowrap overflow-hidden text-ellipsis">
-                      <strong>Nome:</strong> {usuario.name}
-                    </p>
-                    <p className="whitespace-nowrap overflow-hidden text-ellipsis">
-                      <strong>Email:</strong> {usuario.email}
-                    </p>
-                    <p className="whitespace-nowrap overflow-hidden text-ellipsis">
-                      <strong>Senha:</strong> {usuario.password}
-                    </p>
-                    <p className="whitespace-nowrap overflow-hidden text-ellipsis">
-                      <strong>Perfil:</strong> {usuario.perfil}
-                    </p>
-                  </div>
-                  {/* Ícones de Editar e Excluir */}
-                  <div className="flex space-x-8 p-2">
-                    <button className="text-green-500 hover:text-green-300">
-                      <FaEdit size={28} />
-                    </button>
-                    <button className="text-red-500 hover:text-red-700">
-                      <FaTrash size={25} />
-                    </button>
-                  </div>
-                </div>
-              </div>
+        {users.length === 0 ? (
+          <Typography>Não há usuários cadastrados.</Typography>
+        ) : (
+          users
+            .slice()
+            .reverse()
+            .map((usuario) => (
+              <Paper
+                key={usuario.id}
+                sx={{
+                  p: 2,
+                  mb: 2,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Box>
+                  <Typography>
+                    <strong>Nome:</strong> {usuario.name}
+                  </Typography>
+                  <Typography>
+                    <strong>Email:</strong> {usuario.email}
+                  </Typography>
+                  <Typography>
+                    <strong>Perfil:</strong> {usuario.perfil}
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleEdit(usuario)}
+                  >
+                    <Edit />
+                  </IconButton>
+                  <IconButton
+                    color="error"
+                    onClick={() => deleteUsers(usuario.id)}
+                  >
+                    <DeleteOutline />
+                  </IconButton>
+                </Box>
+              </Paper>
             ))
-          )}
-        </div>
-      </div>
-    </div>
+        )}
+      </Paper>
+    </Box>
   );
 }
 
