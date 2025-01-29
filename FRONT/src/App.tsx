@@ -4,16 +4,26 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import DescriptionIcon from "@mui/icons-material/Description";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Box from "@mui/material/Box";
-import { createTheme } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { AppProvider, type Navigation } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { useDemoRouter } from "@toolpad/core/internal";
+
+// importa para idioma ptBR
+import { ptBR } from "@mui/x-data-grid/locales";
+
+//react
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+// Sonner
 import { Toaster } from "sonner";
+
+// Pages
 import Clientes from "./pages/Clientes";
-import Login from "./pages/Login";
-import UsuariosSistema from "./pages/UsuariosSistema";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
+import UsersSystem from "./pages/UsersSystem";
+import UsuariosSistema from "./pages/UsersSystem/index1";
 
 const NAVIGATION: Navigation = [
   {
@@ -32,6 +42,12 @@ const NAVIGATION: Navigation = [
   },
   {
     segment: "usuarios",
+    title: "Usuáriosruin",
+    icon: <ShoppingCartIcon />,
+  },
+
+  {
+    segment: "users",
     title: "Usuários",
     icon: <ShoppingCartIcon />,
   },
@@ -67,41 +83,40 @@ const NAVIGATION: Navigation = [
   },
 ];
 
-const demoTheme = createTheme({
-  cssVariables: {
-    colorSchemeSelector: "data-toolpad-color-scheme",
-  },
-  colorSchemes: { light: true, dark: true },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 600,
-      lg: 1200,
-      xl: 1536,
+const demoTheme = createTheme(
+  {
+    cssVariables: {
+      colorSchemeSelector: "data-toolpad-color-scheme",
+    },
+    colorSchemes: { light: true, dark: true },
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 600,
+        lg: 1200,
+        xl: 1536,
+      },
     },
   },
-});
+  ptBR
+);
 
 function FederalPageContent({ pathname }: { pathname: string }) {
   return (
-    <Box
-      sx={{
-        py: 4,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
-      }}
-    >
-      <Toaster />
+    <ThemeProvider theme={demoTheme}>
+      <Box>
+        <Toaster />
 
-      {pathname === "/dashboard" && <Home />}
-      {pathname === "/clientes" && <Clientes />}
+        {pathname === "/dashboard" && <Home />}
+        {pathname === "/clientes" && <Clientes />}
 
-      {pathname === "/usuarios" && <UsuariosSistema />}
-      {/* <Typography> Meu teste {pathname}</Typography> */}
-    </Box>
+        {pathname === "/users" && <UsersSystem />}
+
+        {pathname === "/usuarios" && <UsuariosSistema />}
+        {/* <Typography> Meu teste {pathname}</Typography> */}
+      </Box>
+    </ThemeProvider>
   );
 }
 
@@ -133,6 +148,7 @@ export function DashboardLayoutFederal(props: DemoProps) {
         <FederalPageContent pathname={router.pathname} />
       </DashboardLayout>
     </AppProvider>
+
     // preview-end
   );
 }
@@ -140,17 +156,8 @@ export function DashboardLayoutFederal(props: DemoProps) {
 // Layout do login
 function LoginLayout() {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
-        textAlign: "center",
-      }}
-    >
-      <Toaster />;
+    <Box>
+      <Toaster />
       <Login />
     </Box>
   );

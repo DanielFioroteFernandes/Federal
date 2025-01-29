@@ -49,23 +49,15 @@ router.get("/listar", async (req, res) => {
   try {
     const { name, email, perfil } = req.query;
 
-    console.log(req.query);
+    // console log para verificar o req
+    // console.log(req.query);
     // Cria o filtro dinamicamente com base nos parâmetros fornecidos
-    const filters = {};
-    if (name) filters.name = { contains: name, mode: "insensitive" }; // Insensitive = ignora case
-    if (email) filters.email = { contains: email, mode: "insensitive" };
-    if (perfil) filters.perfil = perfil;
+    // const filters = {};
+    // if (name) filters.name = { contains: name, mode: "insensitive" }; // Insensitive = ignora case
+    // if (email) filters.email = { contains: email, mode: "insensitive" };
+    // if (perfil) filters.perfil = perfil;
 
-    const users = await prisma.user.findMany({
-      where: filters,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        perfil: true,
-        password: true,
-      },
-    });
+    const users = await prisma.user.findMany();
 
     if (users.length === 0) {
       return res.status(404).json({ message: "Nenhum usuário encontrado." });

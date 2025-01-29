@@ -79,7 +79,7 @@ function Login() {
             Bem-vindo
           </Typography>
           <form onSubmit={handleSubmit}>
-            <Box mb={3}>
+            <Box mb={1}>
               <TextField
                 fullWidth
                 label="Login"
