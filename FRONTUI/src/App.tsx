@@ -1,14 +1,33 @@
-import { ModeToggle } from "./components/mode-toggle";
-import { Button } from "./components/ui/button";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { AppSidebar } from "./components/app-sidebar";
+import { SidebarProvider } from "./components/ui/sidebar";
+import Users from "./pages/Users";
+import Login from "./pages/Login/Login";
+import { ThemeProvider } from "./components/Theme/theme-provider";
 
 function App() {
   return (
-    <div>
-      <ModeToggle />
+    <BrowserRouter>
+      <Routes>
+        {/* Rota de login sem layout */}
+        <Route path="/login" element={<Login />} />
 
-      <h1>Testando</h1>
-      <Button>Me ajude</Button>
-    </div>
+        {/* Rotas com layout */}
+        <Route
+          path="/*"
+          element={
+            <ThemeProvider defaultTheme="dark">
+              <SidebarProvider>
+                <AppSidebar />
+                <Routes>
+                  <Route path="/users" element={<Users />} />
+                </Routes>
+              </SidebarProvider>
+            </ThemeProvider>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
