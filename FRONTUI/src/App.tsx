@@ -4,6 +4,7 @@ import { SidebarProvider } from "./components/ui/sidebar";
 import Users from "./pages/Users";
 import Login from "./pages/Login/Login";
 import { ThemeProvider } from "./components/Theme/theme-provider";
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
                 <AppSidebar />
                 <Routes>
                   <Route path="/users" element={<Users />} />
+                  <Route path="/home" element={<Home />} />
                 </Routes>
               </SidebarProvider>
             </ThemeProvider>
