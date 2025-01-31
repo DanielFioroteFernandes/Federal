@@ -1,14 +1,39 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"form">) {
+// Api
+import api from "@/services/api";
+
+//React e Router
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+export function LoginForm() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const { data: token } = await api.post("/login", { email, password });
+      localStorage.setItem("token", token);
+      navigate("../home");
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Scheduled: Catch up",
+      });
+    }
+  };
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form className={cn("flex flex-col gap-6")} onSubmit={handleSubmit}>
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Entre na sua conta</h1>
         <p className="text-balance text-sm text-muted-foreground">
@@ -18,12 +43,25 @@ export function LoginForm({
       <div className="grid gap-6">
         <div className="grid gap-2">
           <Label htmlFor="email">E-mail</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="password">Senha</Label>
 
-          <Input id="password" type="password" required />
+          <Input
+            id="password"
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
         <Button type="submit" className="w-full">
           Conecte-se
