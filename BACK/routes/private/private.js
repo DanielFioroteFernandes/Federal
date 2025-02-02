@@ -1,6 +1,6 @@
-import express, { query } from "express";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+import express from "express";
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -30,34 +30,17 @@ router.post("/cadastro", async (req, res) => {
   }
 });
 
-// router.get("/listar", async (req, res) => {
-//   let users = [];
-
-//   if (req.query) {
-//     users = await prisma.user.findMany({
-//       where: {
-//         name: req.query.name,
-//         email: req.query.email,
-//       },
-//     });
-//   } else {
-//     users = await prisma.user.findMany();
-//   }
-// });
-
 router.get("/listar", async (req, res) => {
   try {
-    const { name, email, perfil } = req.query;
+    const { name, email } = req.query;
 
-    // console log para verificar o req
-    // console.log(req.query);
-    // Cria o filtro dinamicamente com base nos parâmetros fornecidos
-    // const filters = {};
-    // if (name) filters.name = { contains: name, mode: "insensitive" }; // Insensitive = ignora case
-    // if (email) filters.email = { contains: email, mode: "insensitive" };
-    // if (perfil) filters.perfil = perfil;
+    const filters = {};
+    if (name) filters.name = { contains: name, mode: "insensitive" };
+    if (email) filters.email = { contains: email, mode: "insensitive" };
 
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      where: filters,
+    });
 
     if (users.length === 0) {
       return res.status(404).json({ message: "Nenhum usuário encontrado." });

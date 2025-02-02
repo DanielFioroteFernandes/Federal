@@ -11,7 +11,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Rota de login sem layout */}
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
 
         {/* Rotas com layout */}
         <Route

@@ -27,7 +27,7 @@ export function LoginForm() {
     } catch (err) {
       toast({
         variant: "destructive",
-        title: "Scheduled: Catch up",
+        title: "Login ou senha invalida!",
       });
     }
   };

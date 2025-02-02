@@ -34,13 +34,68 @@ import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { PlusCircle, Search } from "lucide-react";
 
+// React e ReactRouter
+import { useEffect, useState } from "react";
+
+//API
+
+import { toast } from "@/hooks/use-toast";
+import api from "../../services/api";
+
 function Users() {
+  const [users, setUsers] = useState<Users[]>([]);
+
+  const [searchParams, setSearchParams] = useState({
+    email: "",
+  });
+
+  interface Users {
+    id: string;
+    name: string;
+    email: string;
+    perfil: string;
+    password: string;
+  }
+
+  // Pegar usuarios no backend
+
+  async function getUsers() {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await api.get("/listar", {
+        headers: { Authorization: `Bearer ${token}` },
+        params: searchParams,
+      });
+      setUsers(response.data.users || []);
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao carregar usuários",
+      });
+    }
+  }
+
+  // filtrar ususarios pelo nome e email
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setSearchParams({ ...searchParams, [e.target.name]: e.target.value });
+  }
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    getUsers();
+  }
+  useEffect(() => {
+    getUsers();
+  }, []);
+
   return (
     <SidebarInset>
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -74,18 +129,16 @@ function Users() {
             <h1 className="text-3xl font-bold">Usuários</h1>
             {/* div para botão de novo ususario e inputs de pesquisa */}
             <div className="flex items-center justify-between">
-              <form className="flex items-center gap-2">
+              <form className="flex items-center gap-2" onSubmit={handleSearch}>
                 {/* Input pesquisar */}
                 <Input
                   name="email"
                   placeholder="E-mail do usuário"
                   className="w-auto"
+                  value={searchParams.email}
+                  onChange={handleInputChange}
                 />
-                <Input
-                  name="nome"
-                  placeholder="Nome do usuário"
-                  className="w-auto"
-                />
+
                 <Button type="submit" variant={"ghost"}>
                   <Search className="w-4 h-4 mr-1" />
                   Filtrar resultados
@@ -170,16 +223,37 @@ function Users() {
                 </TableHeader>
 
                 <TableBody>
-                  {Array.from({ length: 10 }).map((_, i) => {
-                    return (
-                      <TableRow key={i}>
-                        <TableHead>Daniel Fiorote Fernandes:</TableHead>
-                        <TableHead>Danielfiorote@hotmail.com:</TableHead>
-                        <TableHead>Administrador:</TableHead>
-                        <TableHead>123456789:</TableHead>
+                  {users &&
+                    users.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell
+                          className="truncate max-w-[250px]"
+                          title={user.name}
+                        >
+                          {user.name}
+                        </TableCell>
+                        <TableCell
+                          className="truncate max-w-[250px]"
+                          title={user.email}
+                        >
+                          {user.email}
+                        </TableCell>
+
+                        <TableCell
+                          className="truncate max-w-[250px]"
+                          title={user.perfil}
+                        >
+                          {user.perfil}
+                        </TableCell>
+
+                        <TableCell
+                          className="truncate max-w-[150px]"
+                          title={user.password}
+                        >
+                          {user.password ? "********" : "Não definida"}
+                        </TableCell>
                       </TableRow>
-                    );
-                  })}
+                    ))}
                 </TableBody>
               </Table>
             </div>
